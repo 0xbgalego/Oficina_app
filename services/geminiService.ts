@@ -19,7 +19,7 @@ export const extractLicensePlate = async (base64Image: string): Promise<string |
             },
           },
           {
-            text: "Extract the car license plate number from this image. Only return the plate characters (letters, numbers, and dashes), nothing else. If multiple plates are visible, return the most prominent one. Return 'NULL' if no plate is detected."
+            text: "Identify the vehicle license plate in this zoomed image. Return ONLY the plate characters. Format doesn't matter (can include dashes or dots). If no plate is found, return 'NULL'."
           }
         ]
       },
@@ -29,22 +29,12 @@ export const extractLicensePlate = async (base64Image: string): Promise<string |
     });
 
     const result = response.text?.trim() || 'NULL';
-    return result === 'NULL' ? null : result.toUpperCase();
+    if (result === 'NULL' || result.length < 3) return null;
+    
+    // Limpeza básica: remove espaços e caracteres estranhos, mantém letras, números e traços
+    return result.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
   } catch (error) {
-    console.error("Plate extraction error:", error);
+    console.error("Erro API Gemini:", error);
     return null;
-  }
-};
-
-export const analyzeWorkDay = async (logs: any[]): Promise<string> => {
-  const ai = getAIClient();
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Analyse this mechanic's work logs and give a 1-sentence motivational summary: ${JSON.stringify(logs)}`,
-    });
-    return response.text || "Óptimo trabalho hoje!";
-  } catch {
-    return "Mãos à obra!";
   }
 };
