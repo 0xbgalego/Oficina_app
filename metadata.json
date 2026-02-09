@@ -1,0 +1,7 @@
+{
+  "name": "Copy of AutoScan Workshop Timer",
+  "description": "A high-performance PWA for mechanics to track work time using AI-powered license plate scanning and smart timers.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
